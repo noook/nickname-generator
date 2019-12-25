@@ -19,6 +19,12 @@ export default createComponent({
 </script>
 
 <style lang="scss" scoped>
+.home {
+  @media screen and (min-width: 1024px) {
+    width: 50%;
+    margin: auto;
+  }
+}
 h1 {
   font-size: 2em;
 }

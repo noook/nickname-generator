@@ -40,7 +40,6 @@ table {
 
     td {
       padding: 10px;
-      // font-size: .5em;
     }
   }
 }

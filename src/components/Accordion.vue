@@ -41,7 +41,6 @@ export default createComponent<Props>({
       });
     });
 
-
     return {
       toggleAccordion,
       content,

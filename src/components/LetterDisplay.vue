@@ -22,7 +22,6 @@
           <div class="form-row">
             <input
               type="number"
-              min="800"
               step="100"
               v-model.number="interval"
               name="interval"
@@ -58,33 +57,38 @@ function refreshLetters(displayed: Ref<string>, length: number) {
   }, '');
 }
 
+function useFavorites(displayer: Readonly<Ref<string>>) {
+  const favorites = ref<string[]>([]);
+  const notif = ref<HTMLSpanElement>(null);
+  const addFavorite = () => {
+    favorites.value.push(displayer.value);
+    notif.value?.classList.add('animating');
+    setTimeout(() => {
+      notif.value?.classList.remove('animating');
+    }, 500);
+  };
+
+  return { favorites, notif, addFavorite };
+}
+
 export default createComponent({
   components: {
     Accordion,
     FavoritesTable,
   },
   setup(props, context) {
-    const notif = ref<HTMLSpanElement>(null);
     const capitalize = ref<boolean>(true);
     const letters = ref<string>('');
-    const favorites = reactive<string[]>([]);
     const length = ref<number>(5);
     const interval = ref<number>(1000);
-    const accordionStates = ref<{[index: string]: boolean}>({
-      settings: false,
-      favorites: false,
-    });
-    refreshLetters(letters, length.value);
 
-    // eslint-disable-next-line
-    const displayer = computed(() => (val => (capitalize.value ? val.toUpperCase() : val))(letters.value[0]) + letters.value.slice(1));
-    const addFavorite = () => {
-      favorites.push(displayer.value);
-      notif.value?.classList.add('animating');
-      setTimeout(() => {
-        notif.value?.classList.remove('animating');
-      }, 500);
-    };
+    const displayer = computed(() => {
+      if (!letters.value.length) {
+        return '';
+      }
+      // eslint-disable-next-line
+      return (val => (capitalize.value ? val.toUpperCase() : val))(letters.value[0]) + letters.value.slice(1);
+    });
 
     let timer = setInterval(() => {
       refreshLetters(letters, length.value);
@@ -97,16 +101,19 @@ export default createComponent({
       }, interval.value);
     });
 
+    const accordionStates = ref<{[index: string]: boolean}>({
+      settings: false,
+      favorites: false,
+    });
+
     return {
-      notif,
+      ...useFavorites(displayer),
       capitalize,
-      favorites,
       letters,
       length,
       accordionStates,
       interval,
       displayer,
-      addFavorite,
     };
   },
 });

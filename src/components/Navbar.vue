@@ -7,7 +7,7 @@
       <button class="close" @click="modalVisible(false)">&times;</button>
       <ul>
         <li @click="modalVisible(false)">
-          <router-link to="/">Item</router-link>
+          <!-- <router-link to="/">Item</router-link> -->
         </li>
       </ul>
     </div>
